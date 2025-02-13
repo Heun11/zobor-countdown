@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body{
+        background-color: #282828;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        font-family: monospace;
+      }
+      h1{
+        color: #EBDBB2;
+        text-shadow: 3px 3px 5px rgba(0, 0, 0, 1);
+      }
+      h2{
+        color: #EBDBB2;
+        text-align: center;
+      }
+      h3{
+        color: #EBDBB2;
+        text-align: center;
+      }
+      .text-container{
+        flex-grow: 1;
+        align-content: center;
+        justify-items: center;
+      }
+    </style> 
+  </head>
+  <body>
+    <div class="text-container">
+      <h2>Do koncorocnej navstevy zobora ti ostava:</h2>
+      <h1 id="counter">tu bude akoze odpocet</h1>
+      <h3 id="date">tomino ty si retard</h3>
+      
+      <script>
+      
+        const date = document.getElementById("date");
+        const counter = document.getElementById("counter");
+        var now = new Date();
+
+        function timeUntil(targetDate) 
+        {
+          const now = new Date();
+          const target = new Date(targetDate);
+          const diff = target - now;
+
+          if (diff <= 0) {
+            return { days: 0, hours: 0, minutes: 0, seconds: 0, milliseconds: -1 };
+          }
+
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000)+1;
+          const milliseconds = (diff % 1000);
+
+          return { days, hours, minutes, seconds, milliseconds };
+        }
+
+        function updateCounter()
+        {
+          // realny cas navstevy zobora 
+          var rok = new Date().getFullYear();
+          var cas = "09:00:00";
+          
+          var denD = 30;
+          var budeTo = new Date(""+rok+"-06-"+denD).getDay();
+          if(budeTo==0) denD-=2;
+          if(budeTo==6) denD-=1;
+
+          let timeTillZobor = timeUntil(""+rok+"-06-"+denD+"T"+cas);
+
+          if(timeTillZobor.milliseconds===-1){
+            rok += 1;
+            denD = 30;
+            budeTo = new Date(""+rok+"-06-"+denD).getDay();
+            if(budeTo==0) denD-=2;
+            if(budeTo==6) denD-=1;
+
+            timeTillZobor = timeUntil(""+rok+"-06-"+denD+"T"+cas);
+          }
+
+          let days = ""+timeTillZobor.days+" ";
+          if(days==1) days+="den"
+          else days+="dni"
+
+          let hours = ""+timeTillZobor.hours+" ";
+          if(hours==1) hours+="hodina"
+          else if(hours>0 && hours<5) hours+="hodiny"
+          else hours+="hodin"
+
+          let minutes = ""+timeTillZobor.minutes+" ";
+          if(minutes==1) minutes+="minuta"
+          else if(minutes>0 && minutes<5) minutes+="minuty"
+          else minutes+="minut"
+
+          let seconds = ""+timeTillZobor.seconds+" ";
+          if(seconds==1) seconds+="sekunda"
+          else if(seconds>0 && seconds<5) seconds+="sekundy"
+          else seconds+="sekund"
+
+          let miliseconds = timeTillZobor.milliseconds.toString().padStart(3, '0')+" ";
+          miliseconds+="milisekund"
+
+          if(window.innerWidth<900){
+            counter.innerHTML = ""+days+"<br>"+hours+"<br>"+minutes+"<br>"+seconds+"<br>"+miliseconds;
+          }
+          else{
+            counter.innerHTML = ""+days+", "+hours+", "+minutes+", "+seconds+", "+miliseconds;
+          }
+          date.innerHTML = "den D je "+denD+".6."+rok+" o "+cas;
+        }
+
+        function loopCounter()
+        {
+          updateCounter();
+          setTimeout(loopCounter, 10);
+        }
+
+        updateCounter();
+        loopCounter();
+      
+      </script>
+    </div>
+  </body>
+</html>
